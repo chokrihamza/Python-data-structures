@@ -191,6 +191,117 @@ def traverse_post_order(node):
     return(
         traverse_pre_order(node.left)+traverse_pre_order(node.right)+[node.key])
 
-print(traverse_post_order(tree2))
+#print(traverse_post_order(tree2))
 
+
+
+#print(tree_height(tree2))
+
+
+def minDepth(node):
+    if node is None:
+        return 0
+    if node.left is None and node.right is None:
+        return 1
+    if node.left is None:
+        return minDepth(node.right)+1
+    if node.right is None:
+        return minDepth(node.left)+1
+    return min(minDepth(node.left),minDepth(node.right))+1
+
+print(minDepth(tree2))
+
+def tree_size(node):
+    if node is None:
+        return 0
+    return 1 + tree_size(node.left) + tree_size(node.right)
+
+#print(tree_size(tree2))
+
+#Diameter of Binary Tree
+# 1 first create a function to calculate the height
 #height and size of a binary tree
+def tree_height(node):
+    if node is None:
+        return 0
+    return 1+max(tree_height(node.left),tree_height(node.right))
+
+# define a function to calculate the diameter
+
+def diameter(node):
+    if node is None:
+        return 0
+    # claculate the left and right hight
+    lheight=tree_height(node.left)
+    rheight=tree_height(node.right)
+    # calcualte the diameter recursively for each subtree
+    ldiameter=diameter(node.left)
+    rdiameter=diameter(node.right)
+    return max(lheight+rheight,max(ldiameter,rdiameter))
+
+print(diameter(tree2))
+
+# define a class containing all the function
+
+class TreeNodeGenerator():
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+
+    def height(self):
+        if self is None:
+            return 0
+        return 1 + max(TreeNode.height(self.left), TreeNode.height(self.right))
+
+    def size(self):
+        if self is None:
+            return 0
+        return 1 + TreeNode.size(self.left) + TreeNode.size(self.right)
+
+    def traverse_in_order(self):
+        if self is None:
+            return []
+        return (TreeNode.traverse_in_order(self.left) +
+                [self.key] +
+                TreeNode.traverse_in_order(self.right))
+
+    def display_keys(self, space='\t', level=0):
+        # If the node is empty
+        if self is None:
+            print(space * level + '∅')
+            return
+
+            # If the node is a leaf
+        if self.left is None and self.right is None:
+            print(space * level + str(self.key))
+            return
+
+        # If the node has children
+        display_keys(self.right, space, level + 1)
+        print(space * level + str(self.key))
+        display_keys(self.left, space, level + 1)
+
+    def to_tuple(self):
+        if self is None:
+            return None
+        if self.left is None and self.right is None:
+            return self.key
+        return TreeNode.to_tuple(self.left), self.key, TreeNode.to_tuple(self.right)
+
+    def __str__(self):
+        return "BinaryTree <{}>".format(self.to_tuple())
+
+    def __repr__(self):
+        return "BinaryTree <{}>".format(self.to_tuple())
+
+    @staticmethod
+    def parse_tuple(data):
+        if data is None:
+            node = None
+        elif isinstance(data, tuple) and len(data) == 3:
+            node = TreeNode(data[1])
+            node.left = TreeNode.parse_tuple(data[0])
+            node.right = TreeNode.parse_tuple(data[2])
+        else:
+            node = TreeNode(data)
+        return node
+
