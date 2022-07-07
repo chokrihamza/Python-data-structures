@@ -182,7 +182,10 @@ g.add_edge(2, 3)
 def BFS(Graph,root):
     queue=[]
     discovered=[False]*len(Graph.data)
+    distance=[None]*len(Graph.data)
+    parent=[None]*len(Graph.data)
     discovered[root]=True
+    distance[root]=0
     queue.append(root)
     # in python list doesn't support de dequeue
     idx=0
@@ -192,13 +195,16 @@ def BFS(Graph,root):
         idx+=1
         for node in Graph.data[current]:
             if not discovered[node]:
+                distance[node]=1+distance[current]
+                parent[node]=current
                 discovered[node]=True
                 queue.append(node)
 
-    return queue
+    return queue,distance,parent
 
 
-print(BFS(graph1, 0))
+
+#print(BFS(graph1, 0))
 
 #------------------------------Breadth-First-Search-using hash table in python --------------------------------------------
 
@@ -232,4 +238,86 @@ def bfs_hash(Graph,root):
                 queue.append(i)
     print(visited)
 
-bfs_hash(Graph_hash,0)
+#bfs_hash(Graph_hash,0)
+
+#------------------------------Depth-First-Search-using in python --------------------------------------------
+
+def dfs(Graph, root):
+    stack = []
+    discovered = [False] * len(Graph.data)
+    stack.append(root)
+    result = []
+    while len(stack) > 0:
+        current = stack.pop()
+        if not discovered[current]:
+            discovered[current] = True
+            result.append(current)
+            for node in Graph.data[current]:
+                if not discovered[node]:
+                    stack.append(node)
+
+    return result
+
+#-------------------------------------Weighted Graphs ------------------------------------------------------
+# Graph with weights
+num_nodes5 = 9
+edges5 = [(0, 1, 3), (0, 3, 2), (0, 8, 4), (1, 7, 4), (2, 7, 2), (2, 3, 6),
+          (2, 5, 1), (3, 4, 1), (4, 8, 8), (5, 6, 8)]
+
+print(num_nodes5, len(edges5))
+
+#-------------------------------------Directed Graphs -------------------------------------------------
+num_nodes6 = 5
+edges6 = [(0, 1), (1, 2), (2, 3), (2, 4), (4, 2), (3, 0)]
+print(num_nodes6, len(edges6))
+
+""" 
+Question: Define a class to represent weighted and directed graphs in Python.
+
+"""
+
+
+class Graph_directed_weighted:
+    def __init__(self, num_nodes, edges, directed=False, weighted=False):
+        self.num_nodes = num_nodes
+        self.directed = directed
+        self.weighted = weighted
+        self.data = [[] for _ in range(num_nodes)]
+        self.weight = [[] for _ in range(num_nodes)]
+        for edge in edges:
+            if self.weighted:
+                # include weighted
+                node1, node2, weight = edge
+                self.data[node1].append(node2)
+                self.weight[node1].append(weight)
+                if not directed:
+                    self.data[node2].append(node1)
+                    self.weight[node2].append(weight)
+            else:
+                # work without weighted
+                node1, node2 = edge
+                self.data[node1].append(node2)
+                if not directed:
+                    self.data[node2].append(node1)
+
+    def __repr__(self):
+        result = ""
+        if self.weighted:
+            for i, (nodes, weights) in enumerate(zip(self.data, self.weight)):
+                result += "{}:{} \n".format(i, list(zip(nodes, weights)))
+        else:
+            for i, nodes in enumerate(self.data):
+                result += "{}:{} \n".format(i, nodes)
+
+        return result
+
+
+# test code
+graph3=Graph_directed_weighted(num_nodes5,edges5,weighted=True)
+
+#print(graph3)
+
+graph4=Graph_directed_weighted(num_nodes6,edges6,directed=True)
+#print(graph4)
+
+
