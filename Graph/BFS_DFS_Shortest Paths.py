@@ -52,7 +52,7 @@ for n1,n2 in edges:
 # to make the representation more awesome
 # let's take a look to enumerate
 # print(enumerate) it self return just an object
-print(enumerate([10,2,3,4,5,7,20,14]))
+#print(enumerate([10,2,3,4,5,7,20,14]))
 
 # now let's itirate through it
 """ 
@@ -171,8 +171,65 @@ g.add_edge(0, 2)
 g.add_edge(1, 2)
 g.add_edge(2, 0)
 g.add_edge(2, 3)
-g.print_matrix()
+#g.print_matrix()
 
 
 #-----------------------------------Graph Traversal---------------------------------------
-#-----------------------------------Breadth-First Search----------------------------------
+
+
+#------------------------------Breadth-First-Search --------------------------------------------
+
+def BFS(Graph,root):
+    queue=[]
+    discovered=[False]*len(Graph.data)
+    discovered[root]=True
+    queue.append(root)
+    # in python list doesn't support de dequeue
+    idx=0
+    while idx<len(queue):
+        # dequeue
+        current=queue[idx]
+        idx+=1
+        for node in Graph.data[current]:
+            if not discovered[node]:
+                discovered[node]=True
+                queue.append(node)
+
+    return queue
+
+
+print(BFS(graph1, 0))
+
+#------------------------------Breadth-First-Search-using hash table in python --------------------------------------------
+
+import collections
+
+Graph_hash={
+    0:[1,2,3],
+    1:[0,2],
+    2:[0,1,4],
+    3:[0],
+    4:[2]
+}
+
+Graph_hash2={
+    0:[1,4],
+    1:[0,2,3,4],
+    2:[1,3],
+    3:[1,2,4],
+    4:[0,1,3]
+}
+
+
+def bfs_hash(Graph,root):
+    visited=set()
+    queue=collections.deque([root])
+    while queue:
+        node=queue.popleft()
+        visited.add(node)
+        for i in Graph[node]:
+            if i not in visited:
+                queue.append(i)
+    print(visited)
+
+bfs_hash(Graph_hash,0)
